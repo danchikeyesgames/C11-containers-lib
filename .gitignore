@@ -1,0 +1,14 @@
+# .ccls plugin ignore
+.ccls-cache
+.ccls
+
+# obj files ignore
+object-file/*
+.obj
+
+# Shared objects
+*.so
+*.so.*
+
+# executable file
+*.elf
