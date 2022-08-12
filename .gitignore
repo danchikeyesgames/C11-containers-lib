@@ -12,3 +12,6 @@ object-file/*
 
 # executable file
 *.elf
+
+# vscode congirute files
+.vscode/
