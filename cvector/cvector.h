@@ -44,7 +44,7 @@ segment with define data
         &(((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&((size_t *) (v))[-2])))[-1]))[-1])
 
 #define cvector_pack_vec(v)         \
-        &(((size_t *) &(((cvector_destructor_elem_t *) &(((cvector_constructor_elem_t *) vector)[1]))[1]))[2])
+        &(((size_t *) &(((cvector_destructor_elem_t *) &(((cvector_constructor_elem_t *) (v))[1]))[1]))[2])
 
 /* checks if vector is empty
 @@@ return 1 - if the vector is empty, other case - 0;
@@ -90,7 +90,7 @@ segment with define data
         (vec)[cvector_get_size(vec)] = object;                              \
         cvector_set_size(vec, cvector_get_size(vec) + 1) 
 
-#define cvector_pop_back(vec) v[cvector_get_size(vec) - 1];                 \
+#define cvector_pop_back(vec) (vec)[cvector_get_size(vec) - 1];             \
         cvector_set_size(vec, cvector_get_size(vec) - 1)
 
 
