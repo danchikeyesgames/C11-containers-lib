@@ -13,3 +13,18 @@ void* __cvector_initialization_type(int size, size_t size_object) {
 
     return vector;
 }
+
+void* cvector_set_grow(size_t sz, size_t size_object) {
+    void* vec = NULL;
+    vec = __cvector_initialization_type(sz, size_object);
+    
+    return vec;
+}
+
+void* cvector_realloc(void* src, size_t size) {
+    return realloc(src, size);
+}
+
+void cvector_free(void* v) {
+    free(&(((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1])))[-1]));
+}
