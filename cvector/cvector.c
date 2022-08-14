@@ -22,8 +22,13 @@ void* cvector_set_grow(size_t sz, size_t size_object) {
 }
 
 void* cvector_realloc(void* src, size_t size, size_t size_object) {
-    cvector_set_capacity(src, size);
     size_t new_size = sizeof(cvector_constructor_elem_t) + sizeof(cvector_destructor_elem_t) + 2*sizeof(size_t) + size*size_object;
+    
+    if (src == NULL)
+        return malloc(new_size);
+    else
+        cvector_set_capacity(src, size);
+
     return realloc(cvector_unpack_vec(src), new_size);
 }
 

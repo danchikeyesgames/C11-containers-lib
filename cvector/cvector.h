@@ -80,14 +80,14 @@ segment with define data
             ((size_t *) (v))[-2] = sz
                     
 #define cvector_grow_heap(v, size_object)                                   \
-        v = cvector_realloc(v, cvector_get_capacity(v) * 2, size_object)
+        (v) = cvector_realloc(v, cvector_get_capacity(v) * 2, size_object)
 
 #define cvector_push_back(vec, object)                                      \
         if ((cvector_get_size(vec)) >= (cvector_get_capacity(vec))) {       \
             cvector_grow_heap(vec, sizeof(object));                         \
-            vec = cvector_pack_vec(vec);                                    \
+            (vec) = cvector_pack_vec(vec);                                  \
         }                                                                   \
-        vec[cvector_get_size(vec)] = object;                                \
+        (vec)[cvector_get_size(vec)] = object;                              \
         cvector_set_size(vec, cvector_get_size(vec) + 1) 
 
 #define cvector_pop_back(vec) v[cvector_get_size(vec) - 1];                 \
