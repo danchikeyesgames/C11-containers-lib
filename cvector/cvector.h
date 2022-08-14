@@ -25,20 +25,26 @@ segment with define data
 *********************/
 
 /* gets the current capacity of the vector */ 
-#define cvector_get_capacity(v)  \
+#define cvector_get_capacity(v)     \
         (v) ? ((size_t *) (v))[-2] : (size_t)0
 
 /* gets the current size of the vector */
-#define cvector_get_size(v)  \
+#define cvector_get_size(v)         \
         (v) ? ((size_t *) (v))[-1] : (size_t)0
 
 /* macros gets destructor of the vector (need for others functions) */
-#define cvector_get_destructor(v)  \
+#define cvector_get_destructor(v)   \
         (v) ? (((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1]) : NULL
 
 /* macros gets constructor of the vector (need for others functions) */
-#define cvector_get_constructor(v) \
-        (v) ? (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&(((size_t *)) (v))[-2])))[-1]))[-1]) : NULL
+#define cvector_get_constructor(v)  \
+        (v) ? (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&((size_t *) (v))[-2])))[-1]))[-1]) : NULL
+
+#define cvector_unpack_vec(v)       \
+        &(((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&((size_t *) (v))[-2])))[-1]))[-1])
+
+#define cvector_pack_vec(v)         \
+        &(((size_t *) &(((cvector_destructor_elem_t *) &(((cvector_constructor_elem_t *) vector)[1]))[1]))[2])
 
 /* checks if vector is empty
 @@@ return 1 - if the vector is empty, other case - 0;
@@ -73,19 +79,21 @@ segment with define data
         if ((v))                                                \
             ((size_t *) (v))[-2] = sz
                     
-#define cvector_grow_heap(v)                                    \
-        v = cvector_realloc(v, cvector_get_capacity(v) * 2)
+#define cvector_grow_heap(v, size_object)                                   \
+        v = cvector_realloc(v, cvector_get_capacity(v) * 2, size_object)
 
-#define cvector_push_back(vec, object)                              \
-        if ((cvector_get_size(vec)) >= (cvector_get_capacity(vec))) \
-            cvector_grow_heap(vec);                                 \
+#define cvector_push_back(vec, object)                                      \
+        if ((cvector_get_size(vec)) >= (cvector_get_capacity(vec))) {       \
+            cvector_grow_heap(vec, sizeof(object));                         \
+            vec = cvector_pack_vec(vec);                                    \
+        }                                                                   \
         vec[cvector_get_size(vec)] = object
 
 /* user interface functions */
 
 void*   __cvector_initialization_type(int size, size_t size_object);
 void*   cvector_set_grow(size_t sz, size_t size_object);
-void*   cvector_realloc(void* src, size_t size);
+void*   cvector_realloc(void* src, size_t size, size_t size_object);
 void    cvector_free(void* v);
 
 #endif  // __CVECTOR_H__
