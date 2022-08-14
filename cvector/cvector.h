@@ -87,7 +87,12 @@ segment with define data
             cvector_grow_heap(vec, sizeof(object));                         \
             vec = cvector_pack_vec(vec);                                    \
         }                                                                   \
-        vec[cvector_get_size(vec)] = object
+        vec[cvector_get_size(vec)] = object;                                \
+        cvector_set_size(vec, cvector_get_size(vec) + 1) 
+
+#define cvector_pop_back(vec) v[cvector_get_size(vec) - 1];                 \
+        cvector_set_size(vec, cvector_get_size(vec) - 1)
+
 
 /* user interface functions */
 
