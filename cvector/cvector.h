@@ -56,7 +56,7 @@ segment with define data
 #define cvector_full(v)                                         \
         ((cvector_get_size) == (cvector_get_capacity)) ? 1 : 0
 
-#define cvector_init(size, type) __cvector_initialization_type(size, sizeof(type))
+#define cvector_init(type, ...) __cvector_initialization_type(#__VA_ARGS__[0] != '\0' ? __VA_ARGS__ : 1, sizeof(type))
 
 #define cvector_set_constructor(v, construct_fun)               \
         do {                                                    \
