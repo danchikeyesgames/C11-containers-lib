@@ -54,7 +54,7 @@ segment with define data
         (cvector_size(v)) ? 0 : 1
 
 #define cvector_full(v)                                         \
-        ((cvector_get_size) == (cvector_get_capacity)) ? 1 : 0
+        ((cvector_get_size(v)) == (cvector_get_capacity(v))) ? 1 : 0
 
 #define cvector_init(type, ...) __cvector_initialization_type(#__VA_ARGS__[0] != '\0' ? __VA_ARGS__ : 1, sizeof(type))
 
@@ -84,7 +84,7 @@ segment with define data
         (v) = (v) ? cvector_realloc(v, (cvector_get_capacity(v)) * 2, size_object) : cvector_realloc(v, (size_t) 2, size_object)
 
 #define cvector_push_back(vec, object)                                      \
-        if ((cvector_get_size(vec)) >= (cvector_get_capacity(vec)))         \
+        if ((cvector_full(vec)))                                            \
             cvector_grow_heap(vec, sizeof(object));                         \
                                                                             \
         (vec)[cvector_get_size(vec)] = object;                              \
