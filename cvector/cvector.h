@@ -90,7 +90,9 @@ segment with define data
         (vec)[cvector_get_size(vec)] = object;                              \
         cvector_set_size(vec, (cvector_get_size(vec)) + 1) 
 
-#define cvector_pop_back(vec) (vec)[(cvector_get_size(vec)) - 1];           \
+#define cvector_pop_back(vec) (vec)[(cvector_get_size(vec)) - 1];              \
+        if ((cvector_get_destructor(vec)) != NULL)                             \
+                (cvector_get_destructor(&(vec)[(cvector_get_size(vec)) - 1])); \
         cvector_set_size(vec, (cvector_get_size(vec)) - 1)
 
 
