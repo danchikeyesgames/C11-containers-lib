@@ -27,11 +27,11 @@ segment with define data
 
 /* gets the current capacity of the vector */ 
 #define cvector_get_capacity(v)     \
-        (v) ? ((size_t *) (v))[-2] : (size_t)0
+        ((v) ? ((size_t *) (v))[-2] : (size_t)0)
 
 /* gets the current size of the vector */
 #define cvector_get_size(v)         \
-        (v) ? ((size_t *) (v))[-1] : (size_t)0
+        ((v) ? ((size_t *) (v))[-1] : (size_t)0)
 
 /* macros gets destructor of the vector (need for others functions) */
 #define cvector_get_destructor(v)   \
@@ -90,18 +90,24 @@ segment with define data
         (vec)[cvector_get_size(vec)] = object;                              \
         cvector_set_size(vec, (cvector_get_size(vec)) + 1) 
 
-#define cvector_pop_back(vec) (vec)[(cvector_get_size(vec)) - 1];              \
-        if ((cvector_get_destructor(vec)) != NULL)                             \
-                (cvector_get_destructor(&(vec)[(cvector_get_size(vec)) - 1])); \
+#define cvector_pop_back(vec) (vec)[(cvector_get_size(vec)) - 1];               \
+        if ((cvector_get_destructor(vec)) != NULL)                              \
+                (cvector_get_destructor(&(vec)[(cvector_get_size(vec)) - 1]));  \
         cvector_set_size(vec, (cvector_get_size(vec)) - 1)
 
+
+#define cvector_copy(vec_dest, vec_src) cvector_copy_func(vec_dest, vec_src, vec_src ? sizeof(*vec_src) : 0)          
+
+#define cvector_check_free(ptr) ptr ? (cvector_free(ptr), ptr = NULL) : ptr
 
 /* user interface functions */
 
 void*   __cvector_initialization_type(int size, size_t size_object);
 void*   cvector_set_grow(size_t sz, size_t size_object);
+void*   cvector_copy_func(void* vec_dest, void* vec_src, size_t size_object);
 void*   cvector_realloc(void* src, size_t size, size_t size_object);
 void    cvector_free(void* v);
+
 
 #endif  // __CVECTOR_H__
 

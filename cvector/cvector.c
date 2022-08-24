@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void* __cvector_initialization_type(int size, size_t size_object) {
     void* vector = malloc(sizeof(cvector_constructor_elem_t) + sizeof(cvector_destructor_elem_t) + 2*sizeof(size_t) + size*size_object);
@@ -19,6 +20,30 @@ void* cvector_set_grow(size_t sz, size_t size_object) {
     vec = __cvector_initialization_type(sz, size_object);
     
     return vec;
+}
+
+void* cvector_copy_func(void* vec_dest, void* vec_src, size_t size_object) {
+    size_t size = 0;
+    void* src_ptr = NULL;
+    void* dest_ptr = NULL;
+
+    if (vec_src) {
+        src_ptr = cvector_unpack_vec(vec_src);
+        size = sizeof(cvector_constructor_elem_t) + sizeof(cvector_destructor_elem_t) + 2*sizeof(size_t) + cvector_get_capacity(vec_src) * size_object;
+        if (vec_dest)
+            cvector_free(vec_dest);
+    
+        dest_ptr = (void *) malloc(size);
+        memcpy(dest_ptr, src_ptr, size);
+        dest_ptr = cvector_pack_vec(dest_ptr);
+    } else {
+        if (vec_dest)
+            cvector_free(vec_dest);
+
+        return NULL;
+    }
+
+    return dest_ptr;
 }
 
 void* cvector_realloc(void* src, size_t size, size_t size_object) {
