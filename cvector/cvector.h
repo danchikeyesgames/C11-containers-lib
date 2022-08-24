@@ -72,7 +72,7 @@ cvetor_init(TYPE, size) ---- default size = 1;
 #define cvector_set_constructor(v, construct_fun)               \
         do {                                                    \
             if (!(v))                                           \
-                v = cvector_set_grow(0, 0);                     \
+                v = __cvector_initialization_type(0, 0);        \
             (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1])))[-1]) = construct_fun;   \
         } while(0)
 
@@ -80,7 +80,7 @@ cvetor_init(TYPE, size) ---- default size = 1;
 #define cvector_set_destructor(v, destructor_fun)               \
         do {                                                    \
             if (!(v))                                           \
-                v = cvector_set_grow(0, 0);                     \
+                v = __cvector_initialization_type(0, 0);        \
             (((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1]) = destructor_fun;   \
         } while(0)
 
@@ -93,7 +93,13 @@ cvetor_init(TYPE, size) ---- default size = 1;
 #define cvector_set_capacity(v, sz)                             \
         if ((v))                                                \
             ((size_t *) (v))[-2] = sz
-                    
+
+/*  raise or eraise of the vector to size `sz` 
+    if vector is NULL then use cvector_init(...), dont work with the not initialization vector
+    @@@ return pointer on new vector (pointer has packed yet)
+*/
+#define cvector_set_grow(v, sz) __cvector_set_grow(v, sz, sizeof(*v))
+
 #define cvector_grow_heap(v, size_object)                                   \
         (v) = (v) ? cvector_realloc(v, (cvector_get_capacity(v)) * 2, size_object) : cvector_realloc(v, (size_t) 2, size_object)
 
@@ -118,15 +124,20 @@ cvetor_init(TYPE, size) ---- default size = 1;
 
 #define cvector_check_free(ptr) ptr ? (cvector_free(ptr), ptr = NULL) : ptr
 
-/* user interface functions */
+//  --------------------------------------------------------------------------------
+/********           user interface functions segment                       ********/
 
-void*   __cvector_initialization_type(int size, size_t size_object);
-void*   cvector_set_grow(size_t sz, size_t size_object);
 void*   cvector_copy_func(void* vec_dest, void* vec_src, size_t size_object);
 void*   cvector_realloc(void* src, size_t size, size_t size_object);
-void    __cvector_destroy(void* v, size_t size_object);
 void    cvector_free(void* v);
 
+/*********             macro functions  segment                           **********/
+
+void*   __cvector_initialization_type(int size, size_t size_object);
+void*   __cvector_set_grow(void* vec, size_t sz, size_t size_object);
+void    __cvector_destroy(void* v, size_t size_object);
+
+//  ----------------------------------------------------------------------------------
 
 #endif  // __CVECTOR_H__
 

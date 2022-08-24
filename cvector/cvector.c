@@ -17,11 +17,21 @@ void* __cvector_initialization_type(int size, size_t size_object) {
     return vector;
 }
 
-void* cvector_set_grow(size_t sz, size_t size_object) {
-    void* vec = NULL;
-    vec = __cvector_initialization_type(sz, size_object);
-    
-    return vec;
+void* __cvector_set_grow(void* vec, size_t sz, size_t size_object) {
+    void* new_vec = NULL;
+    size_t size = 0;
+
+    if (sz < (cvector_get_capacity(vec))) {
+        cvector_set_capacity(vec, sz);
+        cvector_copy_func(new_vec, vec, size_object);
+    } else {
+        size = sizeof(cvector_constructor_elem_t) + sizeof(cvector_destructor_elem_t) + 2*sizeof(size_t) + sz * size_object;
+        new_vec = (void *) malloc(size);
+    }
+
+    memcpy(new_vec, vec, (cvector_get_capacity(vec)));
+    cvector_free(vec);
+    return new_vec;
 }
 
 void* cvector_copy_func(void* vec_dest, void* vec_src, size_t size_object) {
