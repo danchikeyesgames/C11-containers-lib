@@ -33,14 +33,14 @@ void* cvector_copy_func(void* vec_dest, void* vec_src, size_t size_object) {
         src_ptr = cvector_unpack_vec(vec_src);
         size = sizeof(cvector_constructor_elem_t) + sizeof(cvector_destructor_elem_t) + 2*sizeof(size_t) + cvector_get_capacity(vec_src) * size_object;
         if (vec_dest)
-            cvector_free(vec_dest);
+            cvector_destroy(vec_dest);
     
         dest_ptr = (void *) malloc(size);
         memcpy(dest_ptr, src_ptr, size);
         dest_ptr = cvector_pack_vec(dest_ptr);
     } else {
         if (vec_dest)
-            cvector_free(vec_dest);
+            cvector_destroy(vec_dest);
 
         return NULL;
     }

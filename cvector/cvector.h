@@ -35,29 +35,40 @@ segment with define data
 
 /* macros gets destructor of the vector (need for others functions) */
 #define cvector_get_destructor(v)   \
-        (v) ? (((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1]) : NULL
+        ((v) ? (((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1]) : NULL)
 
 /* macros gets constructor of the vector (need for others functions) */
 #define cvector_get_constructor(v)  \
-        (v) ? (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&((size_t *) (v))[-2])))[-1]))[-1]) : NULL
+        ((v) ? (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&((size_t *) (v))[-2])))[-1]))[-1]) : NULL)
 
+/* macros move pointer to the beginning of the allocation memory */
 #define cvector_unpack_vec(v)       \
-        &(((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&((size_t *) (v))[-2])))[-1]))[-1])
+        (&(((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&((size_t *) (v))[-2])))[-1]))[-1]))
 
+/* macros move pointer to the beginning of the array segment of allocation memory */
 #define cvector_pack_vec(v)         \
-        &(((size_t *) &(((cvector_destructor_elem_t *) &(((cvector_constructor_elem_t *) (v))[1]))[1]))[2])
+        (&(((size_t *) &(((cvector_destructor_elem_t *) &(((cvector_constructor_elem_t *) (v))[1]))[1]))[2]))
 
 /* checks if vector is empty
 @@@ return 1 - if the vector is empty, other case - 0;
 */
 #define cvector_empty(v)                                        \
-        (cvector_size(v)) ? 0 : 1
+        ((cvector_size(v)) ? 0 : 1)
 
+/* checks if vector is full
+@@@ return 1 - if the vector is full, other case - 0;
+*/
 #define cvector_full(v)                                         \
-        ((cvector_get_size(v)) == (cvector_get_capacity(v))) ? 1 : 0
+        (((cvector_get_size(v)) == (cvector_get_capacity(v))) ? 1 : 0)
 
-#define cvector_init(type, ...) __cvector_initialization_type(#__VA_ARGS__[0] != '\0' ? __VA_ARGS__ : 1, sizeof(type))
+/*  init cvector of defined TYPE 
+    return void* pointer on the allocated memory (packed yet)
+@@@@@@ overload
+cvetor_init(TYPE, size) ---- default size = 1;
+*/
+#define cvector_init(TYPE, ...) __cvector_initialization_type(#__VA_ARGS__[0] != '\0' ? __VA_ARGS__ : 1, sizeof(TYPE))
 
+/* install constructor in the vector */
 #define cvector_set_constructor(v, construct_fun)               \
         do {                                                    \
             if (!(v))                                           \
@@ -65,6 +76,7 @@ segment with define data
             (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1])))[-1]) = construct_fun;   \
         } while(0)
 
+/* install destructor in the vector */
 #define cvector_set_destructor(v, destructor_fun)               \
         do {                                                    \
             if (!(v))                                           \
@@ -72,10 +84,12 @@ segment with define data
             (((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1]) = destructor_fun;   \
         } while(0)
 
+/* install size in the vector equal sz */
 #define cvector_set_size(v, sz)                                 \
         if ((v))                                                \
             ((size_t *) (v))[-1] = sz
 
+/* install capacity in the vector equal sz */
 #define cvector_set_capacity(v, sz)                             \
         if ((v))                                                \
             ((size_t *) (v))[-2] = sz
