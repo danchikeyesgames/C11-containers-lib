@@ -88,7 +88,7 @@ segment with define data
             cvector_grow_heap(vec, sizeof(object));                         \
                                                                             \
         (vec)[cvector_get_size(vec)] = object;                              \
-        cvector_set_size(vec, (cvector_get_size(vec)) + 1) 
+        cvector_set_size(vec, (cvector_get_size(vec)) + 1)
 
 #define cvector_pop_back(vec) (vec)[(cvector_get_size(vec)) - 1];               \
         if ((cvector_get_destructor(vec)) != NULL)                              \
@@ -96,7 +96,11 @@ segment with define data
         cvector_set_size(vec, (cvector_get_size(vec)) - 1)
 
 
-#define cvector_copy(vec_dest, vec_src) cvector_copy_func(vec_dest, vec_src, vec_src ? sizeof(*vec_src) : 0)          
+#define cvector_copy(vec_dest, vec_src) cvector_copy_func(vec_dest, vec_src, vec_src ? sizeof(*vec_src) : 0)
+
+#define cvector_destroy(v) __cvector_destroy(v, sizeof(*v))
+
+#define cvector_check_destroy(ptr) ptr ? (__cvector_destroy(ptr, sizeof(*ptr)), ptr = NULL) : ptr
 
 #define cvector_check_free(ptr) ptr ? (cvector_free(ptr), ptr = NULL) : ptr
 
@@ -106,6 +110,7 @@ void*   __cvector_initialization_type(int size, size_t size_object);
 void*   cvector_set_grow(size_t sz, size_t size_object);
 void*   cvector_copy_func(void* vec_dest, void* vec_src, size_t size_object);
 void*   cvector_realloc(void* src, size_t size, size_t size_object);
+void    __cvector_destroy(void* v, size_t size_object);
 void    cvector_free(void* v);
 
 
