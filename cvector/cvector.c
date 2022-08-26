@@ -8,7 +8,7 @@ static void cvector_destroy_for_each(void* v, size_t size_object);
 static size_t cvector_sizeof(size_t capacity, size_t size_object);
 
 void* __cvector_initialization_type(int size, size_t size_object) {
-    void* vector = malloc(sizeof(cvector_constructor_elem_t) + sizeof(cvector_destructor_elem_t) + 2*sizeof(size_t) + size*size_object);
+    void* vector = malloc(cvector_sizeof(size, size_object));
     vector = cvector_pack_vec(vector);
     cvector_set_capacity(vector, (size_t) size);
     cvector_set_size(vector, 0);
@@ -26,7 +26,7 @@ void* __cvector_set_grow(void* vec, size_t sz, size_t size_object) {
         cvector_set_capacity(vec, sz);
         cvector_copy_func(new_vec, vec, size_object);
     } else {
-        size = sizeof(cvector_constructor_elem_t) + sizeof(cvector_destructor_elem_t) + 2*sizeof(size_t) + sz * size_object;
+        size = cvector_sizeof(sz, size_object);
         new_vec = (void *) malloc(size);
     }
 
@@ -42,7 +42,7 @@ void* cvector_copy_func(void* vec_dest, void* vec_src, size_t size_object) {
 
     if (vec_src) {
         src_ptr = cvector_unpack_vec(vec_src);
-        size = sizeof(cvector_constructor_elem_t) + sizeof(cvector_destructor_elem_t) + 2*sizeof(size_t) + cvector_get_capacity(vec_src) * size_object;
+        size = cvector_sizeof(cvector_get_capacity(vec_src), size_object);
         if (vec_dest)
             cvector_destroy(vec_dest);
     
@@ -71,18 +71,18 @@ void* cvector_concotination(void* vec_dest, void* vec_src, size_t size_object) {
         memcpy(new_vec, dest_vector_start, cvector_sizeof(size_dest, size_object));
         cvector_free(vec_dest);
         new_vec = cvector_pack_vec(new_vec);
+        cvector_set_capacity(new_vec, size_dest + size_src);
     } else new_vec = vec_dest;
 
     vectorptr = new_vec + size_dest * size_object;
     memcpy(vectorptr, vec_src, size_object * size_src);
     cvector_set_size(new_vec, size_dest + size_src);
-    cvector_set_capacity(new_vec, size_dest + size_src);
 
     return new_vec;
 }
 
 void* cvector_realloc(void* src, size_t size, size_t size_object) {
-    size_t new_size = sizeof(cvector_constructor_elem_t) + sizeof(cvector_destructor_elem_t) + 2*sizeof(size_t) + size*size_object;
+    size_t new_size = cvector_sizeof(size, size_object);
     void* v = NULL;
     
     if (src == NULL)
