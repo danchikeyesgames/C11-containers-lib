@@ -95,14 +95,20 @@ cvetor_init(TYPE, size) ---- default size = 1;
             ((size_t *) (v))[-2] = sz
 
 /*  raise or eraise of the vector to size `sz` 
-    if vector is NULL then use cvector_init(...), dont work with the not initialization vector
+    if vector is NULL then use cvector_init(...), dont work with a not initialization vector
     @@@ return pointer on new vector (pointer has packed yet)
 */
 #define cvector_set_grow(v, sz) __cvector_set_grow(v, sz, sizeof(*v))
 
+/* allocate in 2 times more memory in a heap
+   if size of the vector equal it capacity
+*/
 #define cvector_grow_heap(v, size_object)                                   \
         (v) = (v) ? cvector_realloc(v, (cvector_get_capacity(v)) * 2, size_object) : cvector_realloc(v, (size_t) 2, size_object)
 
+/*  if there is free memory then
+    add at the end of a vector new object, else raise capacity/memory for a vector 
+*/
 #define cvector_push_back(vec, object)                                      \
         if ((cvector_full(vec)))                                            \
             cvector_grow_heap(vec, sizeof(object));                         \
@@ -110,14 +116,22 @@ cvetor_init(TYPE, size) ---- default size = 1;
         (vec)[cvector_get_size(vec)] = object;                              \
         cvector_set_size(vec, (cvector_get_size(vec)) + 1)
 
+/* pop object at the end of a vector & return this object
+    @@@ return object at the end
+*/
 #define cvector_pop_back(vec) (vec)[(cvector_get_size(vec)) - 1];               \
         if ((cvector_get_destructor(vec)) != NULL)                              \
                 (cvector_get_destructor(&(vec)[(cvector_get_size(vec)) - 1]));  \
         cvector_set_size(vec, (cvector_get_size(vec)) - 1)
 
-
+/* copy the vec_src to vec_dest
+    @@@ return vector
+*/
 #define cvector_copy(vec_dest, vec_src) cvector_copy_func(vec_dest, vec_src, vec_src ? sizeof(*vec_src) : 0)
 
+/* concatenation two of vectors 
+    @@@ return resulting vector
+*/
 #define cvector_con(vec_dest, vec_src) cvector_concotination(vec_dest, vec_src, vec_src ? sizeof(*vec_src) : 0)
 
 #define cvector_destroy(v) __cvector_destroy(v, sizeof(*v))
