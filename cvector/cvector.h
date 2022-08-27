@@ -119,11 +119,13 @@ cvetor_init(TYPE, size) ---- default size = 1;
 /* pop object at the end of a vector & return this object
     @@@ return object at the end
 */
-#define cvector_pop_back(vec) (vec)[(cvector_get_size(vec)) - 1];               \
-        if ((cvector_get_destructor(vec)) != NULL)                              \
-                (cvector_get_destructor(&(vec)[(cvector_get_size(vec)) - 1]));  \
-        cvector_set_size(vec, (cvector_get_size(vec)) - 1)
-
+#define cvector_pop_back(vec) (vec)[(cvector_get_size(vec)) - 1];                   \
+        do {                                                                        \
+            cvector_destructor_elem_t destructor = cvector_get_destructor(vec);     \
+            if ((cvector_get_destructor(vec)) != NULL)                              \
+                    destructor(&(vec)[(cvector_get_size(vec)) - 1]);                \
+            cvector_set_size(vec, (cvector_get_size(vec)) - 1);                     \
+        } while(0)
 /* copy the vec_src to vec_dest
     [out] vec_dest
     [in]  vec_src
