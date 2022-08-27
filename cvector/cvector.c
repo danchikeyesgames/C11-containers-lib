@@ -6,6 +6,7 @@
 
 static void cvector_destroy_for_each(void* v, size_t size_object);
 static size_t cvector_sizeof(size_t capacity, size_t size_object);
+static void cvector_destructor_elem(void* v);
 
 void* __cvector_initialization_type(int size, size_t size_object) {
     void* vector = malloc(cvector_sizeof(size, size_object));
@@ -21,6 +22,7 @@ void* __cvector_initialization_type(int size, size_t size_object) {
 void* __cvector_set_grow(void* vec, size_t sz, size_t size_object) {
     void* new_vec = NULL;
     size_t size = 0;
+    size_t prev_size = cvector_get_size(vec);
 
     if (sz < (cvector_get_capacity(vec))) {
         cvector_set_capacity(vec, sz);
@@ -31,6 +33,9 @@ void* __cvector_set_grow(void* vec, size_t sz, size_t size_object) {
     }
 
     memcpy(new_vec, vec, (cvector_get_capacity(vec)));
+    for (int i = sz + 1; i < prev_size; ++i) {
+        cvector_destructor_elem((vec + i * size_object));
+    }
     cvector_free(vec);
     return new_vec;
 }
@@ -123,6 +128,11 @@ static void cvector_destroy_for_each(void* v, size_t size_object) {
     for (int i = 0; i < size; ++i) {
         destruct((void*) (v + i * size_object));
     }
+}
+
+static void cvector_destructor_elem(void* v) {
+    cvector_destructor_elem_t destruct = cvector_get_destructor(v);
+    destruct ? destruct(v) : 0;
 }
 
 static size_t cvector_sizeof(size_t capacity, size_t size_object) {

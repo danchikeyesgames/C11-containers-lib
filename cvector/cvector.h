@@ -131,6 +131,18 @@ cvetor_init(TYPE, size) ---- default size = 1;
 */
 #define cvector_copy(vec_dest, vec_src) cvector_copy_func((void **) &vec_dest, vec_src, vec_src ? sizeof(*vec_src) : 0)
 
+#define cvector_ccopy(vec_dest, vec_src, foo)                                               \
+        do {                                                                                \
+            cvector_destroy(vec_dest);                                                      \
+            vec_dest = vec_src ? __cvector_initialization_type(cvector_get_size(vec_src), sizeof(*vec_src)) : NULL; \
+            cvector_set_size(vec_dest, cvector_get_size(vec_src));                          \
+            cvector_set_constructor(vec_dest, cvector_get_constructor(vec_src));           \
+            cvector_set_destructor(vec_dest, cvector_get_destructor(vec_src));             \
+            for (int i = 0; i < cvector_get_size(vec_src); ++i) {                           \
+                foo(&(vec_dest)[i], &(vec_src)[i]);                                         \
+            }                                                                               \
+        } while(0)
+
 /* concatenation two of vectors
     [out] vec_dest
     [out] vec_src = NULL
