@@ -106,6 +106,19 @@ cvetor_init(TYPE, size) ---- default size = 1;
 #define cvector_grow_heap(v, size_object)                                   \
         (v) = (v) ? cvector_realloc(v, (cvector_get_capacity(v)) * 2, size_object) : cvector_realloc(v, (size_t) 2, size_object)
 
+#define cvector_insert(vec, object, index)                                  \
+        do {                                                                \
+            size_t size = cvector_get_size(vec);                            \
+            if (vec) {                                                      \
+                if (index < cvector_get_capacity(vec) && cvector_get_capacity(vec) > size + 1) {     \
+                    for (int i = size; i >= index; --i) {                   \
+                        vec[i + 1] = vec[i];                                \
+                    }                                                       \
+                    vec[index] = object;                                    \
+                }                                                           \
+            }                                                               \
+        } while(0)
+
 /*  if there is free memory then
     add at the end of a vector new object, else raise capacity/memory for a vector 
 */
@@ -126,6 +139,7 @@ cvetor_init(TYPE, size) ---- default size = 1;
                     destructor(&(vec)[(cvector_get_size(vec)) - 1]);                \
             cvector_set_size(vec, (cvector_get_size(vec)) - 1);                     \
         } while(0)
+
 /* copy the vec_src to vec_dest
     [out] vec_dest
     [in]  vec_src
@@ -138,8 +152,8 @@ cvetor_init(TYPE, size) ---- default size = 1;
             cvector_destroy(vec_dest);                                                      \
             vec_dest = vec_src ? __cvector_initialization_type(cvector_get_size(vec_src), sizeof(*vec_src)) : NULL; \
             cvector_set_size(vec_dest, cvector_get_size(vec_src));                          \
-            cvector_set_constructor(vec_dest, cvector_get_constructor(vec_src));           \
-            cvector_set_destructor(vec_dest, cvector_get_destructor(vec_src));             \
+            cvector_set_constructor(vec_dest, cvector_get_constructor(vec_src));            \
+            cvector_set_destructor(vec_dest, cvector_get_destructor(vec_src));              \
             for (int i = 0; i < cvector_get_size(vec_src); ++i) {                           \
                 foo(&(vec_dest)[i], &(vec_src)[i]);                                         \
             }                                                                               \
