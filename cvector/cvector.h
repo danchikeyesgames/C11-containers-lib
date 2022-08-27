@@ -125,26 +125,41 @@ cvetor_init(TYPE, size) ---- default size = 1;
         cvector_set_size(vec, (cvector_get_size(vec)) - 1)
 
 /* copy the vec_src to vec_dest
+    [out] vec_dest
+    [in]  vec_src
     @@@ return vector
 */
 #define cvector_copy(vec_dest, vec_src) cvector_copy_func((void **) &vec_dest, vec_src, vec_src ? sizeof(*vec_src) : 0)
 
-/* concatenation two of vectors 
+/* concatenation two of vectors
+    [out] vec_dest
+    [out] vec_src = NULL
     @@@ return resulting vector
 */
-#define cvector_con(vec_dest, vec_src) cvector_concotination((void **) &vec_dest, (void **) &vec_src, vec_src ? sizeof(*vec_src) : 0)
+#define cvector_con(vec_dest, vec_src) cvector_concatenation((void **) &vec_dest, (void **) &vec_src, vec_src ? sizeof(*vec_src) : 0)
 
+/*
+    free the vector also call a destructor for each element
+*/
 #define cvector_destroy(v) __cvector_destroy(v, sizeof(*v))
 
+/*
+    if ptr not equal NULL calling cvector_destroy()
+    protect from destroy NULL memory
+*/
 #define cvector_check_destroy(ptr) ptr ? (__cvector_destroy(ptr, sizeof(*ptr)), ptr = NULL) : ptr
 
+/*
+    if ptr not equal NULL calling cvector_free()
+    protect from free NULL memory
+*/
 #define cvector_check_free(ptr) ptr ? (cvector_free(ptr), ptr = NULL) : ptr
 
 //  --------------------------------------------------------------------------------
 /********           user interface functions segment                       ********/
 
 void*   cvector_copy_func(void** vec_dest, void* vec_src, size_t size_object);
-void*   cvector_concotination(void** vec_dest, void** vec_src, size_t size_object);
+void*   cvector_concatenation(void** vec_dest, void** vec_src, size_t size_object);
 void*   cvector_realloc(void* src, size_t size, size_t size_object);
 void    cvector_free(void* v);
 

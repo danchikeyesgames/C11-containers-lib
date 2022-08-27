@@ -61,7 +61,7 @@ void* cvector_copy_func(void** vec_dest_src, void* vec_src, size_t size_object) 
     return dest_ptr;
 }
 
-void* cvector_concotination(void** vec_dest_src, void** vec_src_ptr, size_t size_object) {
+void* cvector_concatenation(void** vec_dest_src, void** vec_src_ptr, size_t size_object) {
     void*   vec_dest  = *vec_dest_src;
     void*   vec_src   = *vec_src_ptr;
     size_t  size_src  = cvector_get_size(vec_src);
