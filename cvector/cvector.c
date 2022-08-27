@@ -35,8 +35,9 @@ void* __cvector_set_grow(void* vec, size_t sz, size_t size_object) {
     return new_vec;
 }
 
-void* cvector_copy_func(void* vec_dest, void* vec_src, size_t size_object) {
+void* cvector_copy_func(void** vec_dest_src, void* vec_src, size_t size_object) {
     size_t size = 0;
+    void* vec_dest = *vec_dest_src;
     void* src_ptr = NULL;
     void* dest_ptr = NULL;
 
@@ -56,14 +57,17 @@ void* cvector_copy_func(void* vec_dest, void* vec_src, size_t size_object) {
         return NULL;
     }
 
+    *vec_dest_src = dest_ptr;
     return dest_ptr;
 }
 
-void* cvector_concotination(void* vec_dest, void* vec_src, size_t size_object) {
-    size_t size_src  = cvector_get_size(vec_src);
-    size_t size_dest = cvector_get_size(vec_dest);
+void* cvector_concotination(void** vec_dest_src, void** vec_src_ptr, size_t size_object) {
+    void*   vec_dest  = *vec_dest_src;
+    void*   vec_src   = *vec_src_ptr;
+    size_t  size_src  = cvector_get_size(vec_src);
+    size_t  size_dest = cvector_get_size(vec_dest);
     void*   dest_vector_start = cvector_unpack_vec(vec_dest);
-    void*   new_vec  = NULL;
+    void*   new_vec   = NULL;
     void*   vectorptr = NULL;
 
     if (size_src + size_dest > cvector_get_capacity(vec_dest)) {
@@ -78,6 +82,9 @@ void* cvector_concotination(void* vec_dest, void* vec_src, size_t size_object) {
     memcpy(vectorptr, vec_src, size_object * size_src);
     cvector_set_size(new_vec, size_dest + size_src);
 
+    cvector_free(vec_src);
+    *vec_src_ptr = NULL;
+    *vec_dest_src = new_vec;
     return new_vec;
 }
 
