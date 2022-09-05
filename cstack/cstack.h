@@ -29,11 +29,11 @@ typedef struct __header {
 #define cstack_unpack(header) header->head->data
 
 #define cstack_pop_back_type(header, TYPE) header->head ? *((TYPE *) cstack_unpack(header)) : 0;    \
-        do {                                                \
-        cstack* new = header->head->next;                   \
-        free(header->head->data);                           \
-        free(header->head);                                 \
-        header->head = new;                                 \
+        do {                                                    \
+            cstack* new = header->head->next;                   \
+            free(header->head->data);                           \
+            free(header->head);                                 \
+            header->head = new;                                 \
         } while(0)
 
 #define cstack_create_stack(header) cstack_createStack(&header)

@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+static Item* cstack_malloc_Item(size_t sz, void* data);
+static cstack* cstack_malloc_node(void);
+static cstack_header cstack_malloc(void);
+static void cstack_free_node(cstack* node);
+
 void cstack_createStack(cstack_header* header) {
     *header = cstack_malloc();
     (*header)->size = 0;
