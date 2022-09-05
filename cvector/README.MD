@@ -20,7 +20,7 @@ typedef cvector_init_type(int) cvector_int_t;
 cvector_int_t new_vector_int = NULL;
 
 cvector_push_back(vector, object);          // add object at the end of the vector
-cvector_push_back(cvector_int_t, 20);       // if not enough memory then allocate x2 mem
+cvector_push_back(new_vector_int, 20);       // if not enough memory then allocate x2 mem
 
 cvector_pop_back(vector);                   // return object at the end of the vector
 int tmp = cvector_pop_back(cvector_int_t);  // -----------------------------------------
