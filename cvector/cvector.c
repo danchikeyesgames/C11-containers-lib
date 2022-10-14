@@ -6,7 +6,7 @@
 
 static void cvector_destroy_for_each(void* v, size_t size_object);
 static size_t cvector_sizeof(size_t capacity, size_t size_object);
-static void cvector_destructor_elem(void* v);
+// static void cvector_destructor_elem(void* v);
 
 void* __cvector_initialization_type(int size, size_t size_object) {
     void* vector = malloc(cvector_sizeof(size, size_object));
@@ -17,27 +17,6 @@ void* __cvector_initialization_type(int size, size_t size_object) {
     cvector_set_constructor(vector, NULL);
 
     return vector;
-}
-
-void* __cvector_set_grow(void* vec, size_t sz, size_t size_object) {
-    void* new_vec = NULL;
-    size_t size = 0;
-    size_t prev_size = cvector_get_size(vec);
-
-    if (sz < (cvector_get_capacity(vec))) {
-        cvector_set_capacity(vec, sz);
-        cvector_copy_func(new_vec, vec, size_object);
-    } else {
-        size = cvector_sizeof(sz, size_object);
-        new_vec = (void *) malloc(size);
-    }
-
-    memcpy(new_vec, vec, (cvector_get_capacity(vec)));
-    for (int i = sz + 1; i < prev_size; ++i) {
-        cvector_destructor_elem((vec + i * size_object));
-    }
-    cvector_free(vec);
-    return new_vec;
 }
 
 void* cvector_copy_func(void** vec_dest_src, void* vec_src, size_t size_object) {
@@ -109,7 +88,7 @@ void* cvector_realloc(void* src, size_t size, size_t size_object) {
 }
 
 void cvector_free(void* v) {
-    free(&(((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1])))[-1]));
+    free(cvector_unpack_vec(v));
 }
 
 void __cvector_destroy(void* v, size_t size_object) {
@@ -130,10 +109,10 @@ static void cvector_destroy_for_each(void* v, size_t size_object) {
     }
 }
 
-static void cvector_destructor_elem(void* v) {
-    cvector_destructor_elem_t destruct = cvector_get_destructor(v);
-    destruct ? destruct(v) : 0;
-}
+// static void cvector_destructor_elem(void* v) {
+//     cvector_destructor_elem_t destruct = cvector_get_destructor(v);
+//     destruct ? destruct(v) : 0;
+// }
 
 static size_t cvector_sizeof(size_t capacity, size_t size_object) {
     return sizeof(cvector_constructor_elem_t) + sizeof(cvector_destructor_elem_t) + 2 * sizeof(size_t) + capacity * size_object;

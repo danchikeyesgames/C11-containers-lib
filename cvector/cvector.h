@@ -1,12 +1,13 @@
 #ifndef __CVECTOR_H__
 #define __CVECTOR_H__
 
-/* macros declare new vector different type */
-#define cvector_init_type(type) type *
+#include <stddef.h>
 
-typedef void (*cvector_constructor_elem_t) (void* adr);
+/* macros declare new vector different type */
+#define cvector_t(type) type *
+
+typedef void (*cvector_constructor_elem_t) (void* adr, void* cvector_args);
 typedef void (*cvector_destructor_elem_t)  (void* adr);
-typedef unsigned long size_t;
 
 #ifdef CVECTOR_STRUCT_ENABLE
 
@@ -98,7 +99,6 @@ cvetor_init(TYPE, size) ---- default size = 1;
     if vector is NULL then use cvector_init(...), dont work with a not initialization vector
     @@@ return pointer on new vector (pointer has packed yet)
 */
-#define cvector_set_grow(v, sz) __cvector_set_grow(v, sz, sizeof(*v))
 
 /* allocate in 2 times more memory in a heap
    if size of the vector equal it capacity
@@ -132,7 +132,7 @@ cvetor_init(TYPE, size) ---- default size = 1;
 /* pop object at the end of a vector & return this object
     @@@ return object at the end
 */
-#define cvector_pop_back(vec) (vec)[(cvector_get_size(vec)) - 1];                   \
+#define cvector_pop_back(vec)                                                       \
         do {                                                                        \
             cvector_destructor_elem_t destructor = cvector_get_destructor(vec);     \
             if ((cvector_get_destructor(vec)) != NULL)                              \
@@ -194,7 +194,6 @@ void    cvector_free(void* v);
 /*********             macro functions  segment                           **********/
 
 void*   __cvector_initialization_type(int size, size_t size_object);
-void*   __cvector_set_grow(void* vec, size_t sz, size_t size_object);
 void    __cvector_destroy(void* v, size_t size_object);
 
 //  ----------------------------------------------------------------------------------
