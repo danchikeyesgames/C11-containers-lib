@@ -7,8 +7,10 @@ Lib interface:
 cvector_t(TYPE) <name> = NULL; // replace TYPE ont your type
 // simple example
 cvector_t(int) my_vector = NULL;    // create vector of the int type
+
 // for init vector can to use macro cvector_init(TYPE, size), 
 // default size = 1 => usage two form
+
 my_vector = cvector_init(int);              // init vector of int, size = 1
 my_vector = cvector_init(int, 10);          // init vector of int, size = 10
 // usually write:
@@ -19,17 +21,17 @@ typedef cvector_init_type(int) cvector_int_t;
 // can declare vector
 cvector_int_t new_vector_int = NULL;
 
-cvector_push_back(vector, object);           // add object at the end of the vector
-cvector_push_back(new_vector_int, 20);       // if not enough memory then allocate x2 mem
+cvector_push_back(vector, object);              // add object at the end of the vector
+cvector_push_back(new_vector_int, 20);          // if not enough memory then allocate x2 mem
 
-cvector_pop_back(vector);                   // erase last element
-cvector_pop_back(new_vector_int);           // -----------------------------------------
+cvector_pop_back(vector);                       // erase last element
+cvector_pop_back(new_vector_int);               // -----------------------------------------
 
-cvector_get_size(vector);                   // gets the current size of the vector
-cvector_get_capacity(vector);               // gets the current capacity of the vector
+cvector_get_size(vector);                       // gets the current size of the vector
+cvector_get_capacity(vector);                   // gets the current capacity of the vector
 
 // checks vector
-cvector_empty(vector);
-cvector_full(vector);
+cvector_empty(vector);                          // checks the vector is empty
+cvector_full(vector);                           // checks the vector is full
 
 ```
