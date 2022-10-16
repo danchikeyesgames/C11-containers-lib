@@ -50,7 +50,7 @@ structure of vector:
           | this optional settings, if your type(struct) has malloc/free (default=NULL) 
 ```
 
-Simple example use lib:
+Simple example to use lib:
 ```C
 #include "cvector/cvector.h"
 
@@ -58,7 +58,7 @@ Simple example use lib:
 
 
 int main(void) {
-    cvector_init_type(int) vector_int = NULL; // simple init vector
+    cvector_t(int) vector_int = NULL; // simple init vector
     int tmp;
     size_t size;
 
@@ -75,8 +75,9 @@ int main(void) {
     putchar('\n');
 
     for (int i = 0; i < size; ++i) {          // output the vector in stdout + clear node
-        tmp = cvector_pop_back(vector_int);
+        tmp = vector_int[size - i - 1];
         printf("%d: %d element\n", i, tmp);
+        cvector_pop_back(vector_int);
     }
 
     // the vector is clear

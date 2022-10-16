@@ -98,20 +98,20 @@ cvetor_init(TYPE, size) ---- default size = 1;
 /* allocate in 2 times more memory in a heap
    if size of the vector equal it capacity
 */
-#define cvector_grow_heap(v, size_object)                                   \
+#define cvector_grow_heap(v, size_object)                       \
         (v) = (v) ? cvector_realloc(v, (cvector_get_capacity(v)) * 2, size_object) : cvector_realloc(v, (size_t) 2, size_object)
 
-#define cvector_insert(vec, object, index)                                  \
-        do {                                                                \
-            size_t size = cvector_get_size(vec);                            \
-            if (vec) {                                                      \
-                if (index < cvector_get_capacity(vec) && cvector_get_capacity(vec) > size + 1) {     \
-                    for (int i = size; i >= index; --i) {                   \
-                        vec[i + 1] = vec[i];                                \
-                    }                                                       \
-                    vec[index] = object;                                    \
-                }                                                           \
-            }                                                               \
+#define cvector_insert(vec, object, index)                                                              \
+        do {                                                                                            \
+            size_t size = cvector_get_size(vec);                                                        \
+            if (vec) {                                                                                  \
+                if (index < cvector_get_capacity(vec) && cvector_get_capacity(vec) > size) {            \
+                    for (int i = size - 1; i >= index; --i) {                                           \
+                        (vec)[i + 1] = (vec)[i];                                                        \
+                    }                                                                                   \
+                    (vec)[index] = object;                                                              \
+                }                                                                                       \
+            }                                                                                           \
         } while(0)
 
 /*  if there is free memory then
@@ -150,7 +150,7 @@ cvetor_init(TYPE, size) ---- default size = 1;
     if ptr not equal NULL calling cvector_free()
     protect from free NULL memory
 */
-#define cvector_c __CVECADV_H__heck_free(ptr) ptr ? (cvector_free(ptr), ptr = NULL) : ptr
+#define cvector_check_free(ptr) ptr ? (cvector_free(ptr), ptr = NULL) : ptr
 
 //  --------------------------------------------------------------------------------
 /********           user interface functions segment                       ********/
@@ -165,6 +165,6 @@ void    __cvector_destroy(void* v, size_t size_object);
 
 //  ----------------------------------------------------------------------------------
 
-#endif  // __CVECTOR_H__
+#endif      // __CVECTOR_H__
 
 
