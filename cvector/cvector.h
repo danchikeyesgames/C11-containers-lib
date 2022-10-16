@@ -144,13 +144,13 @@ cvetor_init(TYPE, size) ---- default size = 1;
     if ptr not equal NULL calling cvector_destroy()
     protect from destroy NULL memory
 */
-#define cvector_check_destroy(ptr) ptr ? (__cvector_destroy(ptr, sizeof(*ptr)), ptr = NULL) : ptr
+#define cvector_check_destroy(ptr) (ptr ? (__cvector_destroy(ptr, sizeof(*ptr)), ptr = NULL) : ptr)
 
 /*
     if ptr not equal NULL calling cvector_free()
     protect from free NULL memory
 */
-#define cvector_check_free(ptr) ptr ? (cvector_free(ptr), ptr = NULL) : ptr
+#define cvector_check_free(ptr) (ptr ? (cvector_free(ptr), ptr = NULL) : ptr)
 
 //  --------------------------------------------------------------------------------
 /********           user interface functions segment                       ********/
