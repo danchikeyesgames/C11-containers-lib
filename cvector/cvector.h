@@ -136,6 +136,10 @@ cvetor_init(TYPE, size) ---- default size = 1;
             cvector_set_size(vec, (cvector_get_size(vec)) - 1);                     \
         } while(0)
 
+#define cvector_resize(vec, new_size, object)                                       \
+        if (new_size < cvector_get_size(vec)) cvector_set_size(vec, new_size);      \
+        vec = cvector_realloc(vec, new_size, sizeof(object))
+
 /*
     free the vector also call a destructor for each element
 */
