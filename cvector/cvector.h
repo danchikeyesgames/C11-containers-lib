@@ -110,6 +110,7 @@ cvetor_init(TYPE, size) ---- default size = 1;
                         (vec)[i + 1] = (vec)[i];                                                        \
                     }                                                                                   \
                     (vec)[index] = object;                                                              \
+                    if (index + 1 > size) cvector_set_size(vec, size + 1);                              \
                 }                                                                                       \
             }                                                                                           \
         } while(0)
