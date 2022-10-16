@@ -106,11 +106,11 @@ cvetor_init(TYPE, size) ---- default size = 1;
             size_t size = cvector_get_size(vec);                                                        \
             if (vec) {                                                                                  \
                 if (index < cvector_get_capacity(vec) && cvector_get_capacity(vec) > size) {            \
-                    for (int i = size - 1; i >= index; --i) {                                           \
+                    for (int i = size - 1; i > index; --i) {                                            \
                         (vec)[i + 1] = (vec)[i];                                                        \
                     }                                                                                   \
                     (vec)[index] = object;                                                              \
-                    if (index + 1 > size) cvector_set_size(vec, size + 1);                              \
+                    cvector_set_size(vec, size + 1);                                                    \
                 }                                                                                       \
             }                                                                                           \
         } while(0)
