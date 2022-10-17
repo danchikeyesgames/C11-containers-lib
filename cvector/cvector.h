@@ -74,7 +74,7 @@ cvetor_init(TYPE, size) ---- default size = 1;
         do {                                                    \
             if (!(v))                                           \
                 v = __cvector_initialization_type(0, 0);        \
-            (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1])))[-1]) = construct_fun;   \
+            (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1])))[-1]) = construct_fun;\
         } while(0)
 
 /* install destructor in the vector */
@@ -114,6 +114,20 @@ cvetor_init(TYPE, size) ---- default size = 1;
                 }                                                                                       \
             }                                                                                           \
         } while(0)
+
+
+#define cvector_erase(vec, index)                                                                       \
+        do {                                                                                            \
+            size_t size = cvector_get_size(vec);                                                        \
+            if (index < cvector_get_capacity(vec) && size > index) {                                    \
+                for (int i = index; i < size - 1; ++i) {                                                \
+                    vec[i] = vec[i + 1];                                                                \
+                }                                                                                       \
+            }                                                                                           \
+            cvector_set_size(vec, size - 1);                                                            \
+        } while(0)
+
+
 
 /*  if there is free memory then
     add at the end of a vector new object, else raise capacity/memory for a vector 
