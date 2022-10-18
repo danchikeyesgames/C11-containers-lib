@@ -6,7 +6,7 @@
 /* macros declare new vector different type */
 #define cvector_t(type) type *
 
-typedef void (*cvector_constructor_elem_t) (void* adr, void* cvector_args);
+typedef void (*cvector_constructor_elem_t) (void* src_vec, void* dest_vec, void* cvector_args);
 typedef void (*cvector_destructor_elem_t)  (void* adr);
 
 #ifdef CVECTOR_STRUCT_ENABLE
@@ -127,8 +127,6 @@ cvetor_init(TYPE, size) ---- default size = 1;
             cvector_set_size(vec, size - 1);                                                            \
         } while(0)
 
-
-
 /*  if there is free memory then
     add at the end of a vector new object, else raise capacity/memory for a vector 
 */
@@ -139,20 +137,37 @@ cvetor_init(TYPE, size) ---- default size = 1;
         (vec)[cvector_get_size(vec)] = object;                              \
         cvector_set_size(vec, (cvector_get_size(vec)) + 1)
 
-/* pop object at the end of a vector & return this object
-    @@@ return object at the end
+/* pop object at the end of the vector
+    erase last element, work like as stack
 */
-#define cvector_pop_back(vec)                                                       \
-        do {                                                                        \
-            cvector_destructor_elem_t destructor = cvector_get_destructor(vec);     \
-            if ((cvector_get_destructor(vec)) != NULL)                              \
-                    destructor(&(vec)[(cvector_get_size(vec)) - 1]);                \
-            cvector_set_size(vec, (cvector_get_size(vec)) - 1);                     \
+#define cvector_pop_back(vec)                                                           \
+        do {                                                                            \
+            if (!cvector_empty(vec)) {                                                  \
+                cvector_destructor_elem_t destructor = cvector_get_destructor(vec);     \
+                if ((cvector_get_destructor(vec)) != NULL)                              \
+                        destructor(&(vec)[(cvector_get_size(vec)) - 1]);                \
+                cvector_set_size(vec, (cvector_get_size(vec)) - 1);                     \
+            }                                                                           \
+        } while(0)
+
+#define cvector_cpush_back(vec, object, args)                                                           \
+        do {                                                                                            \
+            cvector_constructor_elem_t constructor = cvector_get_constructor(vec);                      \
+            if ((cvector_full(vec)))                                                                    \
+                cvector_grow_heap(vec, sizeof(object));                                                 \
+                                                                                                        \
+            constructor((void *) &object, (void *) &((vec)[cvector_get_size(vec)]), (void *) args);     \
+            cvector_set_size(vec, (cvector_get_size(vec)) + 1);                                         \
         } while(0)
 
 #define cvector_resize(vec, new_size, object)                                       \
         if (new_size < cvector_get_size(vec)) cvector_set_size(vec, new_size);      \
         vec = cvector_realloc(vec, new_size, sizeof(object))
+
+#define cvector_clear(vec)                                                          \
+        do {                                                                        \
+            cvector_pop_back(vec);                                                  \
+        } while(!cvector_empty(vec))
 
 /*
     free the vector also call a destructor for each element
