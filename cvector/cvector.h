@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-/* macros declare new vector different type */
+/* macro declare new vector different type */
 #define cvector_t(type) type *
 
 typedef void (*cvector_constructor_elem_t) (void* src_vec, void* dest_vec, void* cvector_args);
@@ -26,81 +26,147 @@ typedef void (*cvector_destructor_elem_t)  (void* adr);
 segment with define data
 *********************/
 
-/* gets the current capacity of the vector */ 
-#define cvector_get_capacity(v)     \
+/**
+ * @brief gets the current capacity of the vector 
+ * 
+ * @param v created vector
+ */ 
+#define cvector_get_capacity(v)             \
         ((v) ? ((size_t *) (v))[-2] : (size_t)0)
 
-/* gets the current size of the vector */
-#define cvector_get_size(v)         \
+/**
+ * @brief gets the current size of the vector 
+ * 
+ * @param v created vector
+ */
+#define cvector_get_size(v)                 \
         ((v) ? ((size_t *) (v))[-1] : (size_t)0)
 
-/* macros gets destructor of the vector (need for others functions) */
-#define cvector_get_destructor(v)   \
+/** 
+ * @brief gets destructor of the vector (need for advanced functions) 
+ * 
+ * @param v created vector
+ */
+#define cvector_get_destructor(v)           \
         ((v) ? (((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1]) : NULL)
 
-/* macros gets constructor of the vector (need for others functions) */
-#define cvector_get_constructor(v)  \
+/**
+ * @brief gets constructor of the vector (need for others functions)
+ * 
+ * @param v created vector
+ */
+#define cvector_get_constructor(v)          \
         ((v) ? (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&((size_t *) (v))[-2])))[-1]))[-1]) : NULL)
 
-/* macros move pointer to the beginning of the allocation memory */
-#define cvector_unpack_vec(v)       \
+/**
+ * @brief macro move pointer to the beginning of the allocation memory 
+ * 
+ * @param v vector
+ */
+#define cvector_unpack_vec(v)               \
         (&(((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&((size_t *) (v))[-2])))[-1]))[-1]))
 
-/* macros move pointer to the beginning of the array segment of allocation memory */
-#define cvector_pack_vec(v)         \
+/**
+ * @brief macro move pointer to the beginning array segment of the allocated memory
+ * 
+ * @param v vector
+ */
+#define cvector_pack_vec(v)                 \
         (&(((size_t *) &(((cvector_destructor_elem_t *) &(((cvector_constructor_elem_t *) (v))[1]))[1]))[2]))
 
-/* checks if vector is empty
-@@@ return 1 - if the vector is empty, other case - 0;
-*/
+/**
+ * @brief checks vector for an empty
+ * 
+ * @param v vector
+ * 
+ * @return if the vector is empty: 1, other case: 0
+ */
 #define cvector_empty(v)                                        \
         ((cvector_size(v)) ? 0 : 1)
 
-/* checks if vector is full
-@@@ return 1 - if the vector is full, other case - 0;
-*/
+/**
+ * @brief checks vector for a full
+ * 
+ * @param v vector
+ * 
+ * @return if the vector is full: 1, other case: 0;
+ */
 #define cvector_full(v)                                         \
         (((cvector_get_size(v)) == (cvector_get_capacity(v))) ? 1 : 0)
 
-/*  init cvector of defined TYPE 
-    return void* pointer on the allocated memory (packed yet)
-@@@@@@ overload
-cvetor_init(TYPE, size) ---- default size = 1;
-*/
+/**
+ * @brief init vector of defined TYPE
+ * 
+ * @param TYPE data type
+ * @param size size of vector
+ * 
+ * @return void* pointer on the allocated memory (packed yet)
+ * @overload cvetor_init(TYPE, size), default size = 1
+ */
 #define cvector_init(TYPE, ...) __cvector_initialization_type(#__VA_ARGS__[0] != '\0' ? __VA_ARGS__ : 1, sizeof(TYPE))
 
-/* install constructor in the vector */
-#define cvector_set_constructor(v, construct_fun)               \
+/**
+ * @brief install constructor in the vector 
+ * 
+ * @param v vector 
+ * @param f_construct the function constructor for vector
+ */
+#define cvector_set_constructor(v, f_construct)                 \
         do {                                                    \
             if (!(v))                                           \
                 v = __cvector_initialization_type(0, 0);        \
-            (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1])))[-1]) = construct_fun;\
+            (((cvector_constructor_elem_t *) (&(((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1])))[-1]) = f_construct;\
         } while(0)
 
-/* install destructor in the vector */
-#define cvector_set_destructor(v, destructor_fun)               \
+/** 
+ * @brief install destructor in the vector 
+ * 
+ * @param v vector
+ * @param f_destructor the function destructor for vector
+ */
+#define cvector_set_destructor(v, f_destructor)                 \
         do {                                                    \
             if (!(v))                                           \
                 v = __cvector_initialization_type(0, 0);        \
-            (((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1]) = destructor_fun;   \
+            (((cvector_destructor_elem_t *) (&(((size_t *) (v))[-2])))[-1]) = f_destructor;   \
         } while(0)
 
-/* install size in the vector equal sz */
+/**
+ * @brief install size in the vector equal sz 
+ * 
+ * @param v vector
+ * @param sz new size
+ */
 #define cvector_set_size(v, sz)                                 \
         if ((v))                                                \
             ((size_t *) (v))[-1] = sz
 
-/* install capacity in the vector equal sz */
+/**
+ * @brief install capacity in the vector equal sz
+ * 
+ * @param v vector
+ * @param sz new capacity
+ */
 #define cvector_set_capacity(v, sz)                             \
         if ((v))                                                \
             ((size_t *) (v))[-2] = sz
 
-/* allocate in 2 times more memory in a heap
-   if size of the vector equal it capacity
-*/
+/**
+ * @brief allocate in 2 times more memory in a heap than size of a capacity vector
+ * 
+ * @param v vector
+ * @param size_object size of object
+ */
 #define cvector_grow_heap(v, size_object)                       \
         (v) = (v) ? cvector_realloc(v, (cvector_get_capacity(v)) * 2, size_object) : cvector_realloc(v, (size_t) 2, size_object)
 
+/**
+ * @brief inserts object in vector by index (objects move rigth)
+ * 
+ * @param vec created vector
+ * @param object object
+ * @param index index in vector where object will be insert
+ */
 #define cvector_insert(vec, object, index)                                                              \
         do {                                                                                            \
             size_t size = cvector_get_size(vec);                                                        \
@@ -115,7 +181,12 @@ cvetor_init(TYPE, size) ---- default size = 1;
             }                                                                                           \
         } while(0)
 
-
+/**
+ * @brief remove object in vector by index
+ * 
+ * @param vec created vector
+ * @param index index in vector
+ */
 #define cvector_erase(vec, index)                                                                       \
         do {                                                                                            \
             size_t size = cvector_get_size(vec);                                                        \
@@ -127,9 +198,12 @@ cvetor_init(TYPE, size) ---- default size = 1;
             cvector_set_size(vec, size - 1);                                                            \
         } while(0)
 
-/*  if there is free memory then
-    add at the end of a vector new object, else raise capacity/memory for a vector 
-*/
+/**
+ * @brief if there is free memory then add at the end of a vector new object, else raise capacity/memory for a vector 
+ * 
+ * @param vec vector
+ * @param object inserted object
+ */
 #define cvector_push_back(vec, object)                                      \
         if ((cvector_full(vec)))                                            \
             cvector_grow_heap(vec, sizeof(object));                         \
@@ -137,9 +211,11 @@ cvetor_init(TYPE, size) ---- default size = 1;
         (vec)[cvector_get_size(vec)] = object;                              \
         cvector_set_size(vec, (cvector_get_size(vec)) + 1)
 
-/* pop object at the end of the vector
-    erase last element, work like as stack
-*/
+/**
+ * @brief erase last element, work like as stack
+ * 
+ * @param vec vreation vec
+ */
 #define cvector_pop_back(vec)                                                           \
         do {                                                                            \
             if (!cvector_empty(vec)) {                                                  \
@@ -200,5 +276,3 @@ void    __cvector_destroy(void* v, size_t size_object);
 //  ----------------------------------------------------------------------------------
 
 #endif      // __CVECTOR_H__
-
-
