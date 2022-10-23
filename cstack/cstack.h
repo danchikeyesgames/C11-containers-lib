@@ -16,7 +16,7 @@ typedef struct __Item_cstack {
 } Item;
 
 typedef struct __cstack_node {
-    Item*   data;
+    Item* mem;
     struct  __cstack_node* next;
 } cstack_node;
 
@@ -34,7 +34,11 @@ typedef struct __header {
 
 #define cstack_unpack(header) (header->head)
 
-#define cstack_create(cstack_header, f_const, f_dest, TYPE) _sf_cstack_create(&cstack_header, f_const, f_dest, sizeof(TYPE)) 
+#define cstack_create(cstack_header, f_const, f_dest, TYPE) _sf_cstack_create(&cstack_header, f_const, f_dest, sizeof(TYPE))
+
+#define cstack_get_top(header, object) (_sf_cstack_get_top(header, object))
+
+#define cstack_get_data_ptr(header) (_sf_cstack_get_data_ptr(header))
 
 /**************************************************
 * * * * * * * * functions segment * * * * * * * * *
