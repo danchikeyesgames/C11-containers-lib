@@ -100,7 +100,7 @@ segment with define data
  * @param TYPE data type
  * @param size size of vector
  * 
- * @return void* pointer on the allocated memory (packed yet)
+ * @return void* pointer on the allocated memory (has packed yet)
  * @overload cvetor_init(TYPE, size), default size = 1
  */
 #define cvector_init(TYPE, ...) __cvector_initialization_type(#__VA_ARGS__[0] != '\0' ? __VA_ARGS__ : 1, sizeof(TYPE))

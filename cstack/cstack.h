@@ -3,50 +3,43 @@
 
 #include <stddef.h>
 
-#define CSTACK_STRUCT_ENABLE
-#ifdef CSTACK_STRUCT_ENABLE
+#include "cstackdef.h"
 
-typedef struct Item_cstack {
+#define CSTACK_STRUCT_ENABLE
+
+typedef void (*cstack_destructor_t) (void* adr);
+typedef void (*cstack_constructor_t) (void* src_stack, void* dest_stack, void* cstack_args);
+
+typedef struct __Item_cstack {
     size_t size_object;
     void* data;
 } Item;
 
-typedef struct __cstack {
-    Item* data;
-    struct __cstack* next;
-} cstack;
-#endif      // CSTACK_STRUCT_ENABLE
+typedef struct __cstack_node {
+    Item*   data;
+    struct  __cstack_node* next;
+} cstack_node;
 
 typedef struct __header {
-    size_t size;
-    cstack* head;
-} *cstack_header;
+    size_t          bytes;
+    size_t          size;
+    cstack_node*    head;
+    cstack_destructor_t  destructor;
+    cstack_constructor_t constructor;
+} *cstack_t;
 
-#define cstack_isEmpty(head) (!head->size)
+#define cstack_get_size(cstack) _sf_cstack_get_size(cstack)
 
-#define cstack_push_back(header, data) cstack_push(header, data, data ? sizeof(*data) : NULL)
+#define cstack_empty(cstack) _sf_cstack_empty(cstack)
 
-#define cstack_unpack(header) header->head->data
+#define cstack_unpack(header) (header->head)
 
-#define cstack_pop_back_type(header, TYPE) header->head ? *((TYPE *) cstack_unpack(header)) : 0;    \
-        do {                                                    \
-            cstack* new = header->head->next;                   \
-            free(header->head->data);                           \
-            free(header->head);                                 \
-            header->head = new;                                 \
-        } while(0)
+#define cstack_create(cstack_header, f_const, f_dest, TYPE) _sf_cstack_create(&cstack_header, f_const, f_dest, sizeof(TYPE)) 
 
-#define cstack_create_stack(header) cstack_createStack(&header)
+/**************************************************
+* * * * * * * * functions segment * * * * * * * * *
+***************************************************/
 
-#define cstack_destroy(header) cstack_destroy_each_node(&header)
+void    _sf_cstack_create(cstack_t* header, cstack_constructor_t c, cstack_destructor_t d, size_t type_size);
 
-#define cstack_check_destroy(header) header ? cstack_destroy_each_node(&header) : header
-
-void    cstack_createStack(cstack_header* header);
-void    cstack_push(cstack_header header, void* data, size_t size_object);
-void*   cstack_pop_back(cstack_header header);
-
-void    cstack_destroy_each_node(cstack_header* header);
-
-#undef CSTACK_STRUCT_ENABLE
 #endif      // __CSTACK_H__
