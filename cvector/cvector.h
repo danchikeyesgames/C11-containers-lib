@@ -226,13 +226,23 @@ segment with define data
             }                                                                           \
         } while(0)
 
+/**
+ * @brief add object in back of the vector to use constructor
+ * 
+ * @param vec your vector
+ * @param object inserted object
+ * @param args arguments for constructor function 
+ */
 #define cvector_cpush_back(vec, object, args)                                                           \
         do {                                                                                            \
             cvector_constructor_elem_t constructor = cvector_get_constructor(vec);                      \
             if ((cvector_full(vec)))                                                                    \
                 cvector_grow_heap(vec, sizeof(object));                                                 \
                                                                                                         \
-            constructor((void *) &object, (void *) &((vec)[cvector_get_size(vec)]), (void *) args);     \
+            if (constructor != NULL)                                                                    \
+                constructor((void *) &object, (void *) &((vec)[cvector_get_size(vec)]), (void *) args); \
+            else (vec)[cvector_get_size(vec)] = object;                                                 \
+                                                                                                        \
             cvector_set_size(vec, (cvector_get_size(vec)) + 1);                                         \
         } while(0)
 
