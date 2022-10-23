@@ -214,7 +214,7 @@ segment with define data
 /**
  * @brief erase last element, work like as stack
  * 
- * @param vec vreation vec
+ * @param vec created vector
  */
 #define cvector_pop_back(vec)                                                           \
         do {                                                                            \
@@ -246,30 +246,49 @@ segment with define data
             cvector_set_size(vec, (cvector_get_size(vec)) + 1);                                         \
         } while(0)
 
-#define cvector_resize(vec, new_size, object)                                       \
+/**
+ * @brief change capacity size of vector (if data size < new_size then last elements are erased)
+ * 
+ * @param vec your vector
+ * @param new_size capacity size of new vector
+ * @param object_type data type in your vector
+ */
+#define cvector_resize(vec, new_size, object_type)                                  \
         if (new_size < cvector_get_size(vec)) cvector_set_size(vec, new_size);      \
-        vec = cvector_realloc(vec, new_size, sizeof(object))
+        vec = cvector_realloc(vec, new_size, sizeof(object_type))
 
+/**
+ * @brief erase all elements of vector, but cans to use vector continue
+ * 
+ * @param vec your vector
+ */
 #define cvector_clear(vec)                                                          \
         do {                                                                        \
             cvector_pop_back(vec);                                                  \
         } while(!cvector_empty(vec))
 
-/*
-    free the vector also call a destructor for each element
-*/
+/**
+ * @brief free the vector also call a destructor for each element
+ * 
+ * @param v vector
+ */
 #define cvector_destroy(v) __cvector_destroy(v, sizeof(*v))
 
-/*
-    if ptr not equal NULL calling cvector_destroy()
-    protect from destroy NULL memory
-*/
+/**
+ * @brief if ptr not equal NULL calling cvector_destroy()
+ *
+ * @throw warning: protect from destroy NULL memory
+ * 
+ * @param ptr vector
+ */
 #define cvector_check_destroy(ptr) (ptr ? (__cvector_destroy(ptr, sizeof(*ptr)), ptr = NULL) : ptr)
 
-/*
-    if ptr not equal NULL calling cvector_free()
-    protect from free NULL memory
-*/
+/**
+ * @brief if ptr not equal NULL calling cvector_free()
+ * @throw protect from free NULL memory
+ *
+ * @param ptr vector
+ */
 #define cvector_check_free(ptr) (ptr ? (cvector_free(ptr), ptr = NULL) : ptr)
 
 //  --------------------------------------------------------------------------------
