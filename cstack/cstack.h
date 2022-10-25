@@ -67,6 +67,15 @@ typedef struct __header {
 #define cstack_unpack(header) (_sf_cstack_pointer_head(header))
 
 /**
+ * @brief gets data in node
+ * 
+ * @param node node in stack
+ * 
+ * @return pointer on data segment
+ */
+#define cstack_unpack_node(node) (_sf_ccstack_unpack_node(node))
+
+/**
  * @brief create and init stack
  * 
  * @param cstack_header your declaration variable type of cstack_t

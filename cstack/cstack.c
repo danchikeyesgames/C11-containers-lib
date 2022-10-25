@@ -15,8 +15,6 @@ void _sf_cstack_create(cstack_t* header, cstack_constructor_t c, cstack_destruct
 }
 
 
-
-
 /*
     ****************************** STATIC FUNCTION *******************************
 */
