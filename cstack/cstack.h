@@ -56,7 +56,7 @@ typedef struct __header {
  * 
  * @return pointer on top element of the stack
  */
-#define cstack_unpack(header) _sf_cstack_pointer_head(header)
+#define cstack_unpack(header) (_sf_cstack_pointer_head(header))
 
 /**
  * @brief create and init stack
@@ -76,7 +76,7 @@ typedef struct __header {
  * 
  * @return 1: stack has not element; 0: others case
  */
-#define cstack_get_top(header, object) (_sf_cstack_get_top(header, object))
+#define cstack_get_top(header, object) _sf_cstack_cget_top(header, object)
 
 #define cstack_get_data_ptr(header) (_sf_cstack_get_data_ptr(header))
 
