@@ -5,6 +5,14 @@
 
 #include "cstackdef.h"
 
+/**
+ * @brief primary file with declare types and functions
+ *          
+ * @author btw i use arch
+ * 
+ * @def CSTACK_STRUCT_ENABLE to use lib  
+ */
+
 #define CSTACK_STRUCT_ENABLE
 
 typedef void (*cstack_destructor_t) (void* adr);
@@ -64,7 +72,7 @@ typedef struct __header {
  * @param cstack_header your declaration variable type of cstack_t
  * @param f_const pointer to constructor function (for allocated elemets, other case can put NULL)
  * @param f_dest  pointer to destructor function  (for allocated elemets, other case can put NULL)
- * @param TYPE    type of objects
+ * @param TYPE    type of objects in stack
  */
 #define cstack_create(cstack_header, f_const, f_dest, TYPE) _sf_cstack_create(&cstack_header, f_const, f_dest, sizeof(TYPE))
 
@@ -72,12 +80,19 @@ typedef struct __header {
  * @brief data top element of stack replace to object
  * 
  * @param header your stack
- * @param object object which apply data from stack
+ * @param object object which accept data from stack
  * 
  * @return 1: stack has not element; 0: others case
  */
 #define cstack_get_top(header, object) _sf_cstack_cget_top(header, object)
 
+/**
+ * @brief get pointer to element in stack
+ * 
+ * @param header stack
+ * 
+ * @return pointer to object from top node (type of void*, can require casting to your type pointer) 
+ */
 #define cstack_get_data_ptr(header) (_sf_cstack_get_data_ptr(header))
 
 
