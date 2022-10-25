@@ -39,7 +39,7 @@ typedef struct __header {
     cstack_node*    head;
     cstack_destructor_t  destructor;
     cstack_constructor_t constructor;
-} *cstack_t;
+} cstack_header, *cstack_t;
 
 /**
  * @brief gets current size of the stack 
