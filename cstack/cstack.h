@@ -56,13 +56,30 @@ typedef struct __header {
  * 
  * @return pointer on top element of the stack
  */
-#define cstack_unpack(header) (header->head)
+#define cstack_unpack(header) _sf_cstack_pointer_head(header)
 
+/**
+ * @brief create and init stack
+ * 
+ * @param cstack_header your declaration variable type of cstack_t
+ * @param f_const pointer to constructor function (for allocated elemets, other case can put NULL)
+ * @param f_dest  pointer to destructor function  (for allocated elemets, other case can put NULL)
+ * @param TYPE    type of objects
+ */
 #define cstack_create(cstack_header, f_const, f_dest, TYPE) _sf_cstack_create(&cstack_header, f_const, f_dest, sizeof(TYPE))
 
+/**
+ * @brief data top element of stack replace to object
+ * 
+ * @param header your stack
+ * @param object object which apply data from stack
+ * 
+ * @return 1: stack has not element; 0: others case
+ */
 #define cstack_get_top(header, object) (_sf_cstack_get_top(header, object))
 
 #define cstack_get_data_ptr(header) (_sf_cstack_get_data_ptr(header))
+
 
 /***************************************************
  * * * * * * * * functions segment * * * * * * * * *

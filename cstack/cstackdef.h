@@ -11,4 +11,6 @@
 
 #define _sf_cstack_get_data_ptr(header) (header->head->mem->data)
 
+#define _sf_cstack_pointer_head(header) (header->head)
+
 #endif          // __CSTACKDEF_H__
