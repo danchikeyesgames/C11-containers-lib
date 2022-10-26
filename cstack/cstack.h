@@ -104,11 +104,18 @@ typedef struct __header {
  */
 #define cstack_get_data_ptr(header) (_sf_cstack_get_data_ptr(header))
 
+/**
+ * @brief erase top element in the stack
+ * 
+ * @param cstack your stack
+ */
+#define cstack_pop(cstack) _sf_cstack_pop(cstack)
 
 /***************************************************
  * * * * * * * * functions segment * * * * * * * * *
  ***************************************************/
 
 void    _sf_cstack_create(cstack_t* header, cstack_constructor_t c, cstack_destructor_t d, size_t type_size);
+void    _sf_cstack_pop(cstack_t cs);
 
 #endif      // __CSTACK_H__
