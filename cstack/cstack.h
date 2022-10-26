@@ -120,7 +120,7 @@ typedef struct __header {
             tmp->mem = (cstack_Item *) malloc(sizeof(cstack_Item));         \
             tmp->mem->data = malloc(sizeof(object));                        \
             tmp->mem->size_object = sizeof(object);                         \
-            memcpy(tmp->mem->data, &object, tmp->mem->size_object);         \
+            tmp->mem->data[0] = object;                                     \
             tmp->next = header->head;                                       \
             header->head = tmp;                                             \
             ++header->size;                                                 \
