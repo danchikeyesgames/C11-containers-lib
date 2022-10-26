@@ -2,6 +2,7 @@
 #define __CSTACK_H__
 
 #include <stddef.h>
+#include <stdlib.h>
 
 #include "cstackdef.h"
 
@@ -21,10 +22,10 @@ typedef void (*cstack_constructor_t) (void* src_stack, void* dest_stack, void* c
 typedef struct __Item_cstack {
     size_t size_object;
     void* data;
-} Item;
+} cstack_Item;
 
 typedef struct __cstack_node {
-    Item* mem;
+    cstack_Item* mem;
     struct  __cstack_node* next;
 } cstack_node;
 
@@ -110,6 +111,20 @@ typedef struct __header {
  * @param cstack your stack
  */
 #define cstack_pop(cstack) _sf_cstack_pop(cstack)
+
+#define cstack_push_back(header, object) _sf_cstack_push_back(header, object)
+
+#define _sf_cstack_push_back(header, object)                                \
+        do {                                                                \
+            cstack_node* tmp = (cstack_node *) malloc(sizeof(cstack_node)); \
+            tmp->mem = (cstack_Item *) malloc(sizeof(cstack_Item));         \
+            tmp->mem->data = malloc(sizeof(object));                        \
+            tmp->mem->size_object = sizeof(object);                         \
+            memcpy(tmp->mem->data, &object, tmp->mem->size_object);         \
+            tmp->next = header->head;                                       \
+            header->head = tmp;                                             \
+            ++header->size;                                                 \
+        } while(0)
 
 /***************************************************
  * * * * * * * * functions segment * * * * * * * * *
