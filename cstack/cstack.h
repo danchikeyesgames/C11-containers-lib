@@ -94,7 +94,16 @@ typedef struct __header {
  * 
  * @return 1: stack has not element; 0: others case
  */
-#define cstack_get_top(header, object) _sf_cstack_cget_top(header, object)
+#define cstack_cget_top(header, object) _sf_cstack_cget_top(header, object)
+
+/**
+ * @brief gets object in stack
+ * 
+ * @param header your stack
+ * 
+ * @return object in top node of stack
+ */
+#define cstack_get_top(header) _sd_cstack_get_top(header)
 
 /**
  * @brief get pointer to element in stack
