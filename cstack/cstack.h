@@ -135,6 +135,8 @@ typedef struct __header {
             ++header->size;                                                 \
         } while(0)
 
+#define cstack_peek(stack, count) _sf_cstack_peek(stack, count)
+
 /***************************************************
  * * * * * * * * functions segment * * * * * * * * *
  ***************************************************/

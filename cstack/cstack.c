@@ -30,6 +30,17 @@ void _sf_cstack_pop(cstack_t cs) {
     }
 }
 
+cstack_node* sf_cstack_peek(cstack_t stack, size_t count) {
+    cstack_node* tmp = stack->head;
+    size_t i = 1;
+
+    while (i > count) {
+        tmp = tmp->next;
+    }
+
+    return tmp;
+}
+
 /*
     ****************************** STATIC FUNCTION *******************************
 */
