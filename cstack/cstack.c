@@ -28,6 +28,7 @@ void _sf_cstack_pop(cstack_t cs) {
         if (destructor) {
             destructor(tmp->mem->data);
         }
+        free(tmp->mem->data);
         cstack_free_Item(tmp->mem);
         cstack_free_node(tmp);
     }
@@ -55,6 +56,7 @@ void sf_cstack_destroy(cstack_t st) {
         if (destructor) {
             destructor(current_node->mem->data);
         }
+        free(current_node->mem->data);
         cstack_free_Item(current_node->mem);
         cstack_free_node(current_node);
 
