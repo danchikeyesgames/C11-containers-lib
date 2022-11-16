@@ -137,9 +137,9 @@ typedef struct __header {
         } while(0)
 
 
-#define cstack_push_type(header, object, TYPE) _sd_cstack_push_back(header, object)
+#define cstack_push_type(header, object, TYPE) _sd_cstack_push_back(header, object, TYPE)
 
-#define _sd_cstack_push_back(header, object)                                \
+#define _sd_cstack_push_back(header, object, TYPE)                          \
         do {                                                                \
             cstack_node* tmp = (cstack_node *) malloc(sizeof(cstack_node)); \
             tmp->mem = (cstack_Item *) malloc(sizeof(cstack_Item));         \
