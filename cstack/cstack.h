@@ -137,7 +137,7 @@ typedef struct __header {
         } while(0)
 
 
-#define cstack_push_type(header, object, TYPE) _sd_cstack_push_back(header, object, TYPE)
+#define cstack_push(header, object, TYPE) _sd_cstack_push_back(header, object, TYPE)
 
 #define _sd_cstack_push_back(header, object, TYPE)                          \
         do {                                                                \
