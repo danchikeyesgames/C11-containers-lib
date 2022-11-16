@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "cstackdef.h"
 
@@ -129,7 +130,7 @@ typedef struct __header {
             tmp->mem = (cstack_Item *) malloc(sizeof(cstack_Item));         \
             tmp->mem->data = malloc(sizeof(object));                        \
             tmp->mem->size_object = sizeof(object);                         \
-            tmp->mem->data[0] = object;                                     \
+            memcpy(tmp->mem->data, &object, tmp->mem->size_object);         \
             tmp->next = header->head;                                       \
             header->head = tmp;                                             \
             ++header->size;                                                 \
