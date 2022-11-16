@@ -136,6 +136,21 @@ typedef struct __header {
             ++header->size;                                                 \
         } while(0)
 
+
+#define cstack_push_type(header, object, TYPE) _sd_cstack_push_back(header, object)
+
+#define _sd_cstack_push_back(header, object)                                \
+        do {                                                                \
+            cstack_node* tmp = (cstack_node *) malloc(sizeof(cstack_node)); \
+            tmp->mem = (cstack_Item *) malloc(sizeof(cstack_Item));         \
+            tmp->mem->data = malloc(sizeof(object));                        \
+            tmp->mem->size_object = sizeof(object);                         \
+            ((TYPE *) tmp->mem->data)[0] = object;                          \
+            tmp->next = header->head;                                       \
+            header->head = tmp;                                             \
+            ++header->size;                                                 \
+        } while(0)
+
 #define cstack_peek(stack, count) sf_cstack_peek(stack, count)
 
 #define cstack_destroy(stack) sf_cstack_destroy(stack)
