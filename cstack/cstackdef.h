@@ -7,10 +7,10 @@
 
 #define _sf_cstack_empty(header) (!header->size)
 
-#define _sf_cstack_get_top(header, object) 0;                       \ 
+#define _sf_cstack_get_top(header, object) 0;                       \
         (memcpy(&object, header->head->mem->data, header->bytes))
 
-#define _sd_cstack_get_top(header) (header->head->mem->data[0])
+#define _sd_cstack_get_top(header) (header->head->mem)
 
 #define _sf_cstack_unpack_node(node) (node->mem->data)
 
