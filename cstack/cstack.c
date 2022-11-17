@@ -6,7 +6,7 @@
 static void* cstack_malloc();
 static void cstack_free_node(cstack_node* nd);
 static void cstack_free_Item(cstack_Item* nd);
-static void cstack_free(cstack_t st);
+static void _cstack_free(cstack_t st);
 
 void _sf_cstack_create(cstack_t* header, cstack_constructor_t c, cstack_destructor_t d, size_t type_size) {
     (*header) = (cstack_t) cstack_malloc();
@@ -64,6 +64,10 @@ void sf_cstack_destroy(cstack_t st) {
     }
 }
 
+void sf_cstack_free(cstack_t st) {
+    _cstack_free(st);
+}
+
 /*
     ****************************** STATIC FUNCTION *******************************
 */
@@ -80,6 +84,6 @@ static void cstack_free_Item(cstack_Item* nd) {
     free(nd);
 }
 
-static void cstack_free(cstack_t st) {
+static void _cstack_free(cstack_t st) {
     free(st);
 }

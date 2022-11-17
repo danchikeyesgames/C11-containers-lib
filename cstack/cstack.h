@@ -157,6 +157,10 @@ typedef struct __header {
 
 #define cstack_check_destroy(stack) stack != NULL ? sf_cstack_destroy(stack) : 0
 
+#define cstack_free(stack) sf_cstack_free(stack)
+
+#define cstack_check_free(stack) stack != NULL ? sf_cstack_free(stack) : 0
+
 /***************************************************
  * * * * * * * * functions segment * * * * * * * * *
  ***************************************************/
@@ -165,5 +169,6 @@ void    _sf_cstack_create(cstack_t* header, cstack_constructor_t c, cstack_destr
 void    _sf_cstack_pop(cstack_t cs);
 cstack_node* sf_cstack_peek(cstack_t stack, size_t count);
 void    sf_cstack_destroy(cstack_t st);
+void    sf_cstack_free(cstack_t st);
 
 #endif      // __CSTACK_H__
