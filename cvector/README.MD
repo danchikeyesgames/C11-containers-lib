@@ -1,5 +1,5 @@
 Work with cvector.
-That connect lib need to insert `#include "cvector/cvector.h"` in your code. This header had `defines`, `macros`, `declare types`, `functions` for correct work lib.
+That connect lib need to insert `#include "cvector/cvector.h"` in your code. This header had `defines`, `macros`, `declare types`, `functions` for correct work lib. Container cvector allows to use standart methods from STL. 
 Lib interface:
 
 ```C
@@ -57,6 +57,30 @@ cvector_free(v);            // if v equal NULL get ERROR
 cvector_check_free(vector);                 // It is improvment for standart 'cvector_free()' function, checks that vector isnt NULL  
 cvector_check_destroy(vector);              // It is improvment for standart 'cvector_destroy()' function, checks that vector isnt NULL 
 
+
+cvector_set_constructor(v, f_construct);            // set constructor
+cvector_set_constructor(new_vector_int, fun_name_); // declare: void fun_name_(void* src_vec, void* dest_vec, void* cvector_args)
+
+// src_vec is pointer to your object
+// src_dest_vec is pointer to last free place in vector
+// cvector_args is pointer to args
+
+// write your constructor if you need that allocate memory in object
+
+
+// destructor clear memory, which has been alloceted in constructor 
+cvector_set_destructor(v, f_destructor);            // set destructor
+cvector_set_destructor(v, dd_ff);                   // declare: void dd_ff(void* src_vec)
+
+// gets ref to function destructor
+cvector_destructor_elem_t fd = cvector_get_destructor(v);
+
+// gets ref to function constructor
+cvector_constructor_elem_t fc = cvector_get_constructor(v);
+
+cvector_cpush_back(vec, object, args);                      // add object back in vector and call constructor function with pointer to args
+cvector_cpush_back(new_vector_mytype, ver_object, NULL);    // example
+
 ```
 
 structure of vector:
@@ -104,7 +128,7 @@ int main(void) {
     }
 
     // the vector is clear
-
+    cvector_free(vector_int);
     return 0;
 }
 ```
