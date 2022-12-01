@@ -151,6 +151,10 @@ typedef struct __header {
             ++header->size;                                                 \
         } while(0)
 
+#define cstack_get_constructor(stack) _sd_cstack_get_constructor(stack)
+
+#define cstack_get_destructor(stack) _sd_cstack_get_destructor(stack)
+
 #define cstack_peek(stack, count) sf_cstack_peek(stack, count)
 
 #define cstack_destroy(stack) sf_cstack_destroy(stack)

@@ -21,4 +21,8 @@
 
 #define _sf_cstack_pointer_head(header) (header->head)
 
+#define _sd_cstack_get_constructor(stack) (stack->constructor)
+
+#define _sd_cstack_get_destructor(stack) (stack->destructor)
+
 #endif          // __CSTACKDEF_H__
