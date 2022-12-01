@@ -8,6 +8,16 @@ static void cstack_free_node(cstack_node* nd);
 static void cstack_free_Item(cstack_Item* nd);
 static void _cstack_free(cstack_t st);
 
+void sf_cstack_cpush(cstack_t cstack, void* object, void* args, size_t object_size) {
+    cstack_constructor_t constr = cstack->constructor;
+    cstack_node* tmp = (cstack_node *) malloc(sizeof(cstack_node));
+    tmp->mem = (cstack_Item *) malloc(sizeof(cstack_Item));
+    tmp->mem->data = malloc(object_size);
+    tmp->mem->size_object = object_size;
+
+    constr(object, tmp->mem->data, args);
+}
+
 void _sf_cstack_create(cstack_t* header, cstack_constructor_t c, cstack_destructor_t d, size_t type_size) {
     (*header) = (cstack_t) cstack_malloc();
     (*header)->constructor = c;

@@ -139,6 +139,8 @@ typedef struct __header {
 
 #define cstack_push(header, object, TYPE) _sd_cstack_push_back(header, object, TYPE)
 
+#define cstack_cpush(header, object_ptr, args, TYPE) sf_cstack_cpush(header, object_ptr, args, sizeof(TYPE))
+
 #define _sd_cstack_push_back(header, object, TYPE)                          \
         do {                                                                \
             cstack_node* tmp = (cstack_node *) malloc(sizeof(cstack_node)); \
@@ -172,6 +174,7 @@ typedef struct __header {
 void    _sf_cstack_create(cstack_t* header, cstack_constructor_t c, cstack_destructor_t d, size_t type_size);
 void    _sf_cstack_pop(cstack_t cs);
 cstack_node* sf_cstack_peek(cstack_t stack, size_t count);
+void    sf_cstack_cpush(cstack_t cstack, void* object, void* args, size_t object_size);
 void    sf_cstack_destroy(cstack_t st);
 void    sf_cstack_free(cstack_t st);
 
