@@ -122,6 +122,12 @@ typedef struct __header {
  */
 #define cstack_pop(cstack) _sf_cstack_pop(cstack)
 
+/**
+ * @brief add in stack variable object 
+ * 
+ * @param header your stack
+ * @param object variable object
+ */
 #define cstack_push_back(header, object) _sf_cstack_push_back(header, object)
 
 #define _sf_cstack_push_back(header, object)                                \
@@ -136,9 +142,22 @@ typedef struct __header {
             ++header->size;                                                 \
         } while(0)
 
-
+/**
+ * @brief add in stack literal
+ * 
+ * @param header your stack
+ * @param object literal object
+ */
 #define cstack_push(header, object, TYPE) _sd_cstack_push_back(header, object, TYPE)
 
+/**
+ * @brief add in stack object and call constructor
+ * 
+ * @param header your stack
+ * @param object_ptr pointer to object
+ * @param args argument gor constructor
+ * @param TYPE type elemet
+ */
 #define cstack_cpush(header, object_ptr, args, TYPE) sf_cstack_cpush(header, object_ptr, args, sizeof(TYPE))
 
 #define _sd_cstack_push_back(header, object, TYPE)                          \
