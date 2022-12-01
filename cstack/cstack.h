@@ -75,7 +75,7 @@ typedef struct __header {
  * 
  * @return pointer on data segment
  */
-#define cstack_unpack_node(node) (_sf_ccstack_unpack_node(node))
+#define cstack_unpack_node(node) (_sf_cstack_unpack_node(node))
 
 /**
  * @brief create and init stack
@@ -170,5 +170,8 @@ void    _sf_cstack_pop(cstack_t cs);
 cstack_node* sf_cstack_peek(cstack_t stack, size_t count);
 void    sf_cstack_destroy(cstack_t st);
 void    sf_cstack_free(cstack_t st);
+
+void    cstack_set_constructor(cstack_t cstack, cstack_constructor_t constructor);
+void    cstack_set_destructor(cstack_t cstack, cstack_destructor_t destructor);
 
 #endif      // __CSTACK_H__

@@ -34,6 +34,14 @@ void _sf_cstack_pop(cstack_t cs) {
     }
 }
 
+void cstack_set_constructor(cstack_t cstack, cstack_constructor_t constructor) {
+    cstack->constructor = constructor;
+}
+
+void cstack_set_destructor(cstack_t cstack, cstack_destructor_t destructor) {
+    cstack->destructor = destructor;
+}
+
 cstack_node* sf_cstack_peek(cstack_t stack, size_t count) {
     cstack_node* tmp = stack->head;
     size_t i = 1;
